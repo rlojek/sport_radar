@@ -2,6 +2,7 @@ package org.me.sportradar;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class FootballBoard {
 
@@ -59,4 +60,15 @@ public class FootballBoard {
     private static Function<GameStatus, Long> finishNotStartedGame = gs ->{
         throw new RuntimeException("Game record not started yet");
     };
+
+    public Stream<String> getSummary() {
+
+        Function<GameStatus, String> formatStatus = gs ->{
+            GameScore score = gs.gameScore;
+            return gs.homeTeam + " - " + gs.awayTeam + ": " + score.home + " - " + score.away;
+        };
+        return gameStatusRepository.getAllRecord()
+                .map(r -> r.gameStatus)
+                .map(formatStatus);
+    }
 }

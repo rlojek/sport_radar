@@ -4,6 +4,8 @@ package org.me.sportradar;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.stream.Stream;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -91,6 +93,20 @@ class FootballBoardTest {
         //then
         assertThat(id).isEqualTo(1L);
         verify(gameStatusRepository).addGameStatus(gameStatus);
+    }
+
+    @Test
+    void shouldReturnSummaryOfGameRecords() {
+        //given
+        GameRecord record = new GameRecord(1000L,
+                new GameStatus("home", "away", new GameScore()));
+        given(gameStatusRepository.getAllRecord()).willReturn(Stream.of(record));
+        //when
+        Stream<String> summary = footballBoard.getSummary();
+        //then
+        verify(gameStatusRepository).getAllRecord();
+        assertThat(summary)
+                .containsExactly("home - away: 0 - 0");
     }
 
 }
