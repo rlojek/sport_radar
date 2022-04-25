@@ -109,4 +109,37 @@ class FootballBoardTest {
                 .containsExactly("home - away: 0 - 0");
     }
 
+    @Test
+    void shouldOrderSummaryByScore() throws Exception {
+        //given
+        GameRecord recordLow = new GameRecord(1000L,
+                new GameStatus("home Low", "away Low", new GameScore(1,3)));
+        GameRecord recordHigh = new GameRecord(1000L,
+                new GameStatus("home", "away", new GameScore(10,12)));
+        given(gameStatusRepository.getAllRecord()).willReturn(Stream.of(recordLow, recordHigh));
+        //when
+        Stream<String> summary = footballBoard.getSummary();
+
+        //then
+        verify(gameStatusRepository).getAllRecord();
+        assertThat(summary)
+                .containsExactly("home - away: 10 - 12", "home Low - away Low: 1 - 3");
+    }
+
+    @Test
+    void shouldOrderSummaryWithTheSameScoreByRecordOrder() throws Exception {
+        //given
+        GameRecord recordFirst = new GameRecord(1000L,
+                new GameStatus("home first", "away first", new GameScore(1,3)));
+        GameRecord recordLast = new GameRecord(2000L,
+                new GameStatus("home", "away", new GameScore(2,2)));
+        given(gameStatusRepository.getAllRecord()).willReturn(Stream.of(recordLast, recordFirst));
+        //when
+        Stream<String> summary = footballBoard.getSummary();
+
+        //then
+        verify(gameStatusRepository).getAllRecord();
+        assertThat(summary)
+                .containsExactly("home first - away first: 1 - 3", "home - away: 2 - 2");
+    }
 }

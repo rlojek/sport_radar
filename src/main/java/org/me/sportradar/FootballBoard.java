@@ -1,12 +1,19 @@
 package org.me.sportradar;
 
+import java.util.Comparator;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static java.util.Comparator.comparing;
+
 public class FootballBoard {
 
     private final GameStatusRepository gameStatusRepository;
+    private final Function<GameStatus, String> formatGameStatus = gs ->{
+        GameScore score = gs.gameScore;
+        return gs.homeTeam + " - " + gs.awayTeam + ": " + score.home + " - " + score.away;
+    };
 
     private GameStatus gameStatus = null;
 
@@ -43,6 +50,13 @@ public class FootballBoard {
         this.gameStatus = null;
         return recordId;
     }
+    public Stream<String> getSummary() {
+        Comparator<GameRecord> gameScore = comparing(gr -> gr.gameStatus.gameScore.home + gr.gameStatus.gameScore.away);
+        return gameStatusRepository.getAllRecord()
+                .sorted(gameScore.reversed().thenComparing(gr -> gr.id))
+                .map(r -> r.gameStatus)
+                .map(formatGameStatus);
+    }
 
     private static BiFunction<GameStatus, GameScore, GameStatus> scoreUpdater = GameStatus::updateScore;
 
@@ -61,14 +75,4 @@ public class FootballBoard {
         throw new RuntimeException("Game record not started yet");
     };
 
-    public Stream<String> getSummary() {
-
-        Function<GameStatus, String> formatStatus = gs ->{
-            GameScore score = gs.gameScore;
-            return gs.homeTeam + " - " + gs.awayTeam + ": " + score.home + " - " + score.away;
-        };
-        return gameStatusRepository.getAllRecord()
-                .map(r -> r.gameStatus)
-                .map(formatStatus);
-    }
 }
