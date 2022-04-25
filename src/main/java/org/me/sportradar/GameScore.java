@@ -12,4 +12,8 @@ public class GameScore {
         this.home = home;
         this.away = away;
     }
+
+    public GameScore updateScore(int homeChange, int awayChange) {
+        return new GameScore(home + homeChange, away+awayChange);
+    }
 }

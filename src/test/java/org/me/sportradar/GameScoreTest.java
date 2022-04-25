@@ -14,4 +14,14 @@ class GameScoreTest {
         assertThat(cut.away).isEqualTo(0);
     }
 
+    @Test
+    void whenScoreUpdateIsGivenUpdateShouldBeApplied(){
+        GameScore cut = new GameScore();
+        int homeUpdate = 1;
+        int awayUpdate = 10;
+        GameScore gameScoreUpdated = cut.updateScore(homeUpdate, awayUpdate);
+        assertThat(gameScoreUpdated.home).isEqualTo(1);
+        assertThat(gameScoreUpdated.away).isEqualTo(10);
+    }
+
 }
