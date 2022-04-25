@@ -7,15 +7,18 @@ public class FootballBoard {
 
     private GameStatus gameStatus = null;
 
-    private  BiFunction<String , String, GameStatus> startGameHandler = gameStarter;
+    private BiFunction<String, String, GameStatus> startGameHandler = gameStarter;
 
-    private BiFunction<GameStatus, GameScore, GameStatus> gameUpdateHandler = (status, score) -> null;
+    private BiFunction<GameStatus, GameScore, GameStatus> gameUpdateHandler = gameNotStartedUpdate;
+
+    private Function<GameStatus, GameStatus> gameFinisHandler = finishNotStartedGame ;
 
     public GameStatus startGame(String homeName, String awayName) {
 
-        startGameHandler = (x,y) -> null;
-        this.gameStatus = gameStarter.apply(homeName, awayName);
+        this.gameStatus = startGameHandler.apply(homeName, awayName);
+        this.startGameHandler = doubleGameStarter;
         this.gameUpdateHandler = scoreUpdater;
+        this.gameFinisHandler = finishGameRecord;
         return this.gameStatus;
     }
 
@@ -23,15 +26,29 @@ public class FootballBoard {
         return gameUpdateHandler.apply(this.gameStatus, scoreUpdate);
     }
 
+    public void finishGame(){
+        this.gameStatus = gameFinisHandler.apply(this.gameStatus);
+        this.startGameHandler = gameStarter;
+        this.gameUpdateHandler = gameNotStartedUpdate;
+        this.gameFinisHandler = finishNotStartedGame;
+    }
 
-    private static BiFunction<GameStatus, GameScore, GameStatus> scoreUpdater = (status, score) -> {
-        return  status.updateScore(score);
+    private static BiFunction<GameStatus, GameScore, GameStatus> scoreUpdater = GameStatus::updateScore;
+
+    private static BiFunction<GameStatus, GameScore, GameStatus> gameNotStartedUpdate = (status, score) -> {
+        throw new RuntimeException("Game record not started yet");
     };
 
-    private static BiFunction<String , String, GameStatus> gameStarter = (homeName, awayName) ->{
-        GameStatus gameStatus = new GameStatus(homeName, awayName);
-        return gameStatus;
+    private static BiFunction<String, String, GameStatus> gameStarter = GameStatus::new;
+
+    private static BiFunction<String, String, GameStatus> doubleGameStarter = (homeName, awayName) ->
+    {
+        throw new RuntimeException("Game record in progress");
     };
 
+    private static Function<GameStatus, GameStatus> finishGameRecord = ga -> null;
 
+    private static Function<GameStatus, GameStatus> finishNotStartedGame = gs ->{
+        throw new RuntimeException("Game record not started yet");
+    };
 }
