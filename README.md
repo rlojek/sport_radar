@@ -24,3 +24,11 @@ Football World Cup Score Board that shows matches and scores.
 9. Germany 2 - France 2
 
 ## Those are basic guidelines for board logic acceptance testing
+
+## Game Score update logic
+Game score is updated on state based input, i.e. an update message contains current score of a match.
+This was chosen to fit a scenario when an operator or an observer
+sends time to time game score form the field. 
+If required event stream store should be use - when updates come in form of 
+information about score chane, delta values (more for automated real time systems)
+Handling both ways can be achieved by a decorator to update game score api method.  

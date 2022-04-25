@@ -8,24 +8,21 @@ import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(SoftAssertionsExtension.class)
-class GameScoreTest {
+class GameStatusScoreTest {
 
     @Test
     void shouldCreateFreshGameScore(SoftAssertions softly) {
-        GameScore cut = new GameScore();
-        assertThat(cut).isNotNull();
-        softly.assertThat(cut.home).isEqualTo(0);
-        softly.assertThat(cut.away).isEqualTo(0);
+        assertThat(new GameScore()).isNotNull();
+        softly.assertThat(new GameScore().home).isEqualTo(0);
+        softly.assertThat(new GameScore().away).isEqualTo(0);
     }
 
     @Test
     void whenScoreUpdateIsGivenUpdateShouldBeApplied(SoftAssertions softly){
-        GameScore cut = new GameScore();
         int homeUpdate = 1;
         int awayUpdate = 10;
-        GameScore gameScoreUpdated = cut.updateScore(homeUpdate, awayUpdate);
+        GameScore gameScoreUpdated = new GameScore(homeUpdate, awayUpdate);
         softly.assertThat(gameScoreUpdated.home).isEqualTo(homeUpdate);
         softly.assertThat(gameScoreUpdated.away).isEqualTo(awayUpdate);
     }
-
 }

@@ -14,9 +14,28 @@ class FootballBoardTest {
         //when
         String homeName = "home";
         String awayName = "away";
-        Game theGame = cut.startGame(homeName, awayName);
+        GameStatus theGameStatus = cut.startGame(homeName, awayName);
         //then
-        assertThat(theGame).isNotNull();
+        assertThat(theGameStatus).isNotNull();
     }
+
+    @Test
+    void shouldUpdateOngoingGameScoreWithGivenNumbers()  {
+        //given
+        FootballBoard cut = new FootballBoard();
+        String homeName = "home";
+        String awayName = "away";
+        GameStatus theGameStatus = cut.startGame(homeName, awayName);
+
+        GameScore aScore = new GameScore(3,1);
+        //when
+        theGameStatus = cut.updateScore(aScore);
+
+        //then
+        GameScore gameScore = theGameStatus.gameScore;
+        assertThat(gameScore.home).isEqualTo(3);
+        assertThat(gameScore.away).isEqualTo(1);
+    }
+
 
 }

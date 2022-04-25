@@ -8,12 +8,9 @@ public class GameScore {
         this(0,0);
     }
 
-    private GameScore(int home, int away) {
+    public GameScore(int home, int away) {
         this.home = home;
         this.away = away;
     }
 
-    public GameScore updateScore(int homeChange, int awayChange) {
-        return new GameScore(home + homeChange, away+awayChange);
-    }
 }
