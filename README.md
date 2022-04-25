@@ -32,3 +32,6 @@ sends time to time game score form the field.
 If required event stream store should be use - when updates come in form of 
 information about score chane, delta values (more for automated real time systems)
 Handling both ways can be achieved by a decorator to update game score api method.  
+
+## Get summary logic
+As not specified -> summary can be requested any time, it will return all the finished game records up to get summary method call

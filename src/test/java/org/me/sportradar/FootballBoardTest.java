@@ -1,20 +1,23 @@
 package org.me.sportradar;
 
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
 class FootballBoardTest {
 
+    private GameStatusRepository gameStatusRepository = mock(GameStatusRepository.class);
+    private final FootballBoard footballBoard = new FootballBoard(gameStatusRepository);
+
     @Test
     void startGameShouldCreateEmptyScore() {
-        //given
-        FootballBoard cut = new FootballBoard();
         //when
         String homeName = "home";
         String awayName = "away";
-        GameStatus theGameStatus = cut.startGame(homeName, awayName);
+        GameStatus theGameStatus = footballBoard.startGame(homeName, awayName);
         //then
         assertThat(theGameStatus).isNotNull();
     }
@@ -22,14 +25,13 @@ class FootballBoardTest {
     @Test
     void shouldUpdateOngoingGameScoreWithGivenNumbers()  {
         //given
-        FootballBoard cut = new FootballBoard();
         String homeName = "home";
         String awayName = "away";
-        cut.startGame(homeName, awayName);
+        footballBoard.startGame(homeName, awayName);
 
         GameScore aScore = new GameScore(3,1);
         //when
-        GameStatus theGameStatus = cut.updateScore(aScore);
+        GameStatus theGameStatus = footballBoard.updateScore(aScore);
 
         //then
         GameScore gameScore = theGameStatus.gameScore;
@@ -39,25 +41,22 @@ class FootballBoardTest {
 
     @Test
     void shouldFailToUpdateNotStartedGame()  {
-        FootballBoard cut = new FootballBoard();
-        Throwable ex = catchThrowable(() -> cut.updateScore(new GameScore()));
+        Throwable ex = catchThrowable(() -> footballBoard.updateScore(new GameScore()));
         assertThat(ex).hasMessage("Game record not started yet")
                 .isInstanceOf(RuntimeException.class);
     }
 
     @Test
     void shouldFailToStartGameWhileOneIsOngoing() {
-        FootballBoard cut = new FootballBoard();
-        cut.startGame("home", "away");
-        Throwable ex = catchThrowable(() -> cut.startGame("home", "away"));
+        footballBoard.startGame("home", "away");
+        Throwable ex = catchThrowable(() -> footballBoard.startGame("home", "away"));
         assertThat(ex).hasMessage("Game record in progress")
                 .isInstanceOf(RuntimeException.class);
     }
 
     @Test
     void shouldFailToFinishNotStartedGame() {
-        FootballBoard cut = new FootballBoard();
-        Throwable ex = catchThrowable(() -> cut.finishGame());
+        Throwable ex = catchThrowable(() -> footballBoard.finishGame());
         assertThat(ex).hasMessage("Game record not started yet")
                 .isInstanceOf(RuntimeException.class);
     }
@@ -65,19 +64,33 @@ class FootballBoardTest {
     @Test
     void shouldRestartBoardAfterFinish(){
         //given
-        FootballBoard cut = new FootballBoard();
-        cut.startGame("home", "away");
-        cut.updateScore(new GameScore(11, 22));
+        footballBoard.startGame("home", "away");
+        footballBoard.updateScore(new GameScore(11, 22));
 
         //when
-        cut.finishGame();
+        footballBoard.finishGame();
         String freshHome = "fresh home";
         String freshAway = "fresh away";
-        GameStatus gameStatus = cut.startGame(freshHome, freshAway);
+        GameStatus gameStatus = footballBoard.startGame(freshHome, freshAway);
         //then
         assertThat(gameStatus.homeTeam).isEqualTo(freshHome);
         assertThat(gameStatus.awayTeam).isEqualTo(freshAway);
         assertThat(gameStatus.gameScore.home).isEqualTo(0);
         assertThat(gameStatus.gameScore.away).isEqualTo(0);
     }
+
+    @Test
+    @DisplayName("Game Status should be sored in repo when game is finished")
+    void shouldAddGameStatusToRepositoryWhenFinished() {
+        //given
+        footballBoard.startGame("home", "away");
+        GameStatus gameStatus = footballBoard.updateScore(new GameScore(11, 22));
+        given(gameStatusRepository.addGameStatus(any())).willReturn(1L);
+        //when
+        Long id = footballBoard.finishGame();
+        //then
+        assertThat(id).isEqualTo(1L);
+        verify(gameStatusRepository).addGameStatus(gameStatus);
+    }
+
 }
