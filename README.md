@@ -42,4 +42,4 @@ Simple implementation with atomic long for ease of unique id making.
 The logic of formatting and sorting could be brought out to external objects if required, 
 easy to implement as lambda or method reference.
 
-# Acceptance test will be added tomorrow - when I'll get some sleep and finish daily business. I'm very sorry for inconvenience.  
+# Acceptance test added as Junit class 
