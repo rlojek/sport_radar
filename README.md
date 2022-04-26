@@ -17,13 +17,13 @@ Football World Cup Score Board that shows matches and scores.
    * d. Uruguay - Italy: 6 – 6
    * e. Argentina - Australia: 3 - 1 
      
-The summary would provide with the following information:
+5. The summary would provide with the following information:
 
-5. Uruguay 6 - Italy 6
-6. Spain 10 - Brazil 2
-7. Mexico 0 - Canada 5
-8. Argentina 3 - Australia 1
-9. Germany 2 - France 2
+   * 1\. Uruguay 6 - Italy 6
+   * 2\. Spain 10 - Brazil 2
+   * 3\. Mexico 0 - Canada 5
+   * 4\. Argentina 3 - Australia 1
+   * 5\. Germany 2 - France 2
 
 ## Those are basic guidelines for board logic acceptance testing
 
