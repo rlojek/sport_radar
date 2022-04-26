@@ -6,13 +6,15 @@ import org.junit.jupiter.api.Test;
 
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.*;
 
 class FootballBoardTest {
 
     private GameStatusRepository gameStatusRepository = mock(GameStatusRepository.class);
-    private final FootballBoard footballBoard = new FootballBoard(gameStatusRepository, null);
+    private SummaryGenerator summaryGenerator = mock(SummaryGenerator.class);
+    private final FootballBoard footballBoard = new FootballBoard(gameStatusRepository, summaryGenerator);
 
     @Test
     void startGameShouldCreateEmptyScore() {
@@ -96,50 +98,17 @@ class FootballBoardTest {
     }
 
     @Test
-    void shouldReturnSummaryOfGameRecords() {
-        //given
-        GameRecord record = new GameRecord(1000L,
-                new GameStatus("home", "away", new GameScore()));
-        given(gameStatusRepository.getAllRecord()).willReturn(Stream.of(record));
-        //when
-        Stream<String> summary = footballBoard.getSummary();
-        //then
-        verify(gameStatusRepository).getAllRecord();
-        assertThat(summary)
-                .containsExactly("home 0 - away 0");
-    }
+    @DisplayName("Get Summary should reach to repo and pass records to generator - integration check")
+    void shouldUseRecordsFromRepositoryToGenerateSummary(){
+        Stream<GameRecord> recordsStream = Stream.empty();
+        given(gameStatusRepository.getAllRecord()).willReturn(recordsStream);
+        Stream<String> summaryFormatted = Stream.empty();
+        given(summaryGenerator.generateSummary(recordsStream)).willReturn(summaryFormatted);
 
-    @Test
-    void shouldOrderSummaryByScore() throws Exception {
-        //given
-        GameRecord recordLow = new GameRecord(1000L,
-                new GameStatus("home Low", "away Low", new GameScore(1,3)));
-        GameRecord recordHigh = new GameRecord(1000L,
-                new GameStatus("home", "away", new GameScore(10,12)));
-        given(gameStatusRepository.getAllRecord()).willReturn(Stream.of(recordLow, recordHigh));
-        //when
         Stream<String> summary = footballBoard.getSummary();
 
-        //then
         verify(gameStatusRepository).getAllRecord();
-        assertThat(summary)
-                .containsExactly("home 10 - away 12", "home Low 1 - away Low 3");
-    }
-
-    @Test
-    void shouldOrderSummaryWithTheSameScoreByRecordOrder() throws Exception {
-        //given
-        GameRecord recordFirst = new GameRecord(1000L,
-                new GameStatus("home first", "away first", new GameScore(1,3)));
-        GameRecord recordLast = new GameRecord(2000L,
-                new GameStatus("home", "away", new GameScore(2,2)));
-        given(gameStatusRepository.getAllRecord()).willReturn(Stream.of(recordLast, recordFirst));
-        //when
-        Stream<String> summary = footballBoard.getSummary();
-
-        //then
-        verify(gameStatusRepository).getAllRecord();
-        assertThat(summary)
-                .containsExactly("home 2 - away 2", "home first 1 - away first 3");
+        verify(summaryGenerator).generateSummary(recordsStream);
+        assertThat(summary).isSameAs(summaryFormatted);
     }
 }
