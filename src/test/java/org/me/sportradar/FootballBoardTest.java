@@ -106,7 +106,7 @@ class FootballBoardTest {
         //then
         verify(gameStatusRepository).getAllRecord();
         assertThat(summary)
-                .containsExactly("home - away: 0 - 0");
+                .containsExactly("home 0 - away 0");
     }
 
     @Test
@@ -123,7 +123,7 @@ class FootballBoardTest {
         //then
         verify(gameStatusRepository).getAllRecord();
         assertThat(summary)
-                .containsExactly("home - away: 10 - 12", "home Low - away Low: 1 - 3");
+                .containsExactly("home 10 - away 12", "home Low 1 - away Low 3");
     }
 
     @Test
@@ -140,6 +140,6 @@ class FootballBoardTest {
         //then
         verify(gameStatusRepository).getAllRecord();
         assertThat(summary)
-                .containsExactly("home first - away first: 1 - 3", "home - away: 2 - 2");
+                .containsExactly("home first 1 - away first 3", "home 2 - away 2");
     }
 }

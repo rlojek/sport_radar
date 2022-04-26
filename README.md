@@ -11,12 +11,13 @@ Football World Cup Score Board that shows matches and scores.
 4. Get a summary of games by total score. Those games with the same total score will
    be returned ordered by the most recently added to our system.
    As an example, being the current data in the system:
-   a. Mexico - Canada: 0 - 5
-   b. Spain - Brazil: 10 – 2
-   c. Germany - France: 2 – 2
-   d. Uruguay - Italy: 6 – 6
-   e. Argentina - Australia: 3 - 1
-   The summary would provide with the following information:
+   * a. Mexico - Canada: 0 - 5
+   * b. Spain - Brazil: 10 – 2
+   * c. Germany - France: 2 – 2
+   * d. Uruguay - Italy: 6 – 6
+   * e. Argentina - Australia: 3 - 1 
+     
+The summary would provide with the following information:
 5. Uruguay 6 - Italy 6
 6. Spain 10 - Brazil 2
 7. Mexico 0 - Canada 5

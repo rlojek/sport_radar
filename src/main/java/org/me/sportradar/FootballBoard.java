@@ -12,7 +12,7 @@ public class FootballBoard {
     private final GameStatusRepository gameStatusRepository;
     private final Function<GameStatus, String> formatGameStatus = gs ->{
         GameScore score = gs.gameScore;
-        return gs.homeTeam + " - " + gs.awayTeam + ": " + score.home + " - " + score.away;
+        return gs.homeTeam + " " + score.home +" - " + gs.awayTeam + " " + score.away;
     };
 
     private GameStatus gameStatus = null;
