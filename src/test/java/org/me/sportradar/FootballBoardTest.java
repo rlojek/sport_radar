@@ -140,6 +140,6 @@ class FootballBoardTest {
         //then
         verify(gameStatusRepository).getAllRecord();
         assertThat(summary)
-                .containsExactly("home first 1 - away first 3", "home 2 - away 2");
+                .containsExactly("home 2 - away 2", "home first 1 - away first 3");
     }
 }

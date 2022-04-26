@@ -53,7 +53,7 @@ public class FootballBoard {
     public Stream<String> getSummary() {
         Comparator<GameRecord> gameScore = comparing(gr -> gr.gameStatus.gameScore.home + gr.gameStatus.gameScore.away);
         return gameStatusRepository.getAllRecord()
-                .sorted(gameScore.reversed().thenComparing(gr -> gr.id))
+                .sorted(gameScore.thenComparing(gr -> gr.id).reversed())
                 .map(r -> r.gameStatus)
                 .map(formatGameStatus);
     }
