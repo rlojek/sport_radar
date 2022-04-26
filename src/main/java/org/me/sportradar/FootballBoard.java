@@ -10,11 +10,7 @@ import static java.util.Comparator.comparing;
 public class FootballBoard {
 
     private final GameStatusRepository gameStatusRepository;
-    private final Function<GameStatus, String> formatGameStatus = gs ->{
-        GameScore score = gs.gameScore;
-        return gs.homeTeam + " " + score.home +" - " + gs.awayTeam + " " + score.away;
-    };
-
+    private final Function<GameStatus, String> formatGameStatus;
     private GameStatus gameStatus = null;
 
     private BiFunction<String, String, GameStatus> startGameHandler = gameStarter;
@@ -23,8 +19,9 @@ public class FootballBoard {
 
     private Function<GameStatus, Long> gameFinisHandler = finishNotStartedGame ;
 
-    public FootballBoard(GameStatusRepository gameStatusRepository) {
+    public FootballBoard(GameStatusRepository gameStatusRepository, Function<GameStatus, String> formatGameStatus) {
         this.gameStatusRepository = gameStatusRepository;
+        this.formatGameStatus = formatGameStatus;
     }
 
     public GameStatus startGame(String homeName, String awayName) {
@@ -52,10 +49,11 @@ public class FootballBoard {
     }
     public Stream<String> getSummary() {
         Comparator<GameRecord> gameScore = comparing(gr -> gr.gameStatus.gameScore.home + gr.gameStatus.gameScore.away);
-        return gameStatusRepository.getAllRecord()
+        Stream<String> formattedSummery = gameStatusRepository.getAllRecord()
                 .sorted(gameScore.thenComparing(gr -> gr.id).reversed())
                 .map(r -> r.gameStatus)
                 .map(formatGameStatus);
+        return formattedSummery;
     }
 
     private static BiFunction<GameStatus, GameScore, GameStatus> scoreUpdater = GameStatus::updateScore;

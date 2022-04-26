@@ -12,7 +12,7 @@ import static org.mockito.BDDMockito.*;
 class FootballBoardTest {
 
     private GameStatusRepository gameStatusRepository = mock(GameStatusRepository.class);
-    private final FootballBoard footballBoard = new FootballBoard(gameStatusRepository);
+    private final FootballBoard footballBoard = new FootballBoard(gameStatusRepository, null);
 
     @Test
     void startGameShouldCreateEmptyScore() {

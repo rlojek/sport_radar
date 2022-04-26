@@ -11,7 +11,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 public class BoardAcceptanceTest {
 
     private GameStatusRepository repo = new InMemRecordRepo();
-    FootballBoard theBoard = new FootballBoard(repo);
+    FootballBoard theBoard = new FootballBoard(repo, SummaryFormatter::formatSummary);
 
     @Test
     void acceptanceTest() {
